@@ -37,6 +37,47 @@ const explorations = {
   }
 };
 
+const siteHeader = document.querySelector('#site-header');
+if (siteHeader) {
+  const updateHeader = () => siteHeader.classList.toggle('is-scrolled', window.scrollY > 12);
+  window.addEventListener('scroll', updateHeader, { passive: true });
+  updateHeader();
+}
+
+const projectTabs = document.querySelector('#project-tabs');
+if (projectTabs) {
+  const tabs = [...projectTabs.querySelectorAll('[role="tab"]')];
+  const activateTab = (activeTab, moveFocus = false) => {
+    tabs.forEach(tab => {
+      const selected = tab === activeTab;
+      tab.setAttribute('aria-selected', String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      const panel = document.getElementById(tab.getAttribute('aria-controls'));
+      if (panel) panel.hidden = !selected;
+    });
+    if (moveFocus) activeTab.focus({ preventScroll: true });
+  };
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => activateTab(tab));
+    tab.addEventListener('keydown', event => {
+      let nextIndex;
+      switch (event.key) {
+        case 'ArrowRight': nextIndex = (index + 1) % tabs.length; break;
+        case 'ArrowLeft': nextIndex = (index - 1 + tabs.length) % tabs.length; break;
+        case 'Home': nextIndex = 0; break;
+        case 'End': nextIndex = tabs.length - 1; break;
+        default: return;
+      }
+      event.preventDefault();
+      activateTab(tabs[nextIndex], true);
+    });
+  });
+
+  const initialTab = tabs.find(tab => tab.getAttribute('aria-selected') === 'true') || tabs[0];
+  if (initialTab) activateTab(initialTab);
+}
+
 const menuToggle = document.querySelector('.menu-toggle');
 const mobileNav = document.querySelector('#mobile-nav');
 function closeMenu() {

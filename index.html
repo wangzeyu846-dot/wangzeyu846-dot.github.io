@@ -1,63 +1,343 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f2f0eb">
-  <meta name="description" content="汪泽雨，AI 产品经理。从真实需求出发，探索更自然、更有价值的智能体验。">
-  <meta property="og:title" content="汪泽雨 · AI 产品经理">
-  <meta property="og:description" content="以人的需求为起点，让 AI 成为好用的产品。">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://wangzeyu846-dot.github.io/">
-  <meta property="og:image" content="https://wangzeyu846-dot.github.io/assets/hero-golden-hour.jpg">
-  <link rel="canonical" href="https://wangzeyu846-dot.github.io/">
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="preload" as="image" href="assets/hero-golden-hour.jpg" fetchpriority="high">
-  <link rel="stylesheet" href="styles.css?v=20261102-editorial">
-  <script src="app.js?v=20261102-editorial" defer></script>
-  <title>汪泽雨 · AI 产品经理</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>汪泽雨 · AI 产品经理</title>
+<meta name="description" content="汪泽雨，AI 产品经理。写 AI 产品观察，做 Agent Skills 和可体验的 AI 原型。">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@500;600&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #f7f7f4;
+    --bone: #f0efea;
+    --card: #fbfbf9;
+    --ink: #26251e;
+    --muted: #6f6d64;
+    --line: #e1dfd7;
+    --accent: #8b1e3f;
+    --accent-soft: #f3e6ea;
+    --serif: "EB Garamond", "Noto Serif SC", serif;
+    --sans: Inter, "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --parchment: #16150f; --bone: #1f1e18; --card: #1b1a15; --ink: #edebe3; --muted: #a29f94;
+      --line: #302e27; --accent: #e07a95; --accent-soft: #3a2029;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+  body { margin: 0; background: var(--parchment); color: var(--ink); font: 15px/1.7 var(--sans); }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* 顶部导航 */
+  .top { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--parchment) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .top .wrap { display: flex; align-items: center; gap: 24px; height: 64px; }
+  .brand { margin-right: auto; font: 500 19px var(--serif); letter-spacing: 0.08em; }
+  .brand:hover { color: var(--accent); }
+  .nav { display: flex; gap: 20px; font-size: 14px; color: var(--muted); }
+  .nav a:hover { color: var(--ink); }
+  .btn { display: inline-block; padding: 8px 16px; border-radius: 8px; background: var(--ink); color: var(--parchment); font-size: 14px; white-space: nowrap; }
+  .btn:hover { background: var(--accent); }
+  .gh { font-size: 14px; color: var(--muted); }
+  .gh:hover { color: var(--ink); }
+
+  /* 布局 */
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 40px; padding-top: 40px; padding-bottom: 80px; }
+  .block { margin-top: 56px; }
+  .block:first-child { margin-top: 0; }
+  .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; }
+  .head h2 { font: 500 28px/1.2 var(--serif); margin: 0; }
+  .head a, .head span { font-size: 13px; color: var(--muted); }
+  .head a:hover { color: var(--accent); }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 20px; transition: border-color .2s; }
+  a.card:hover { border-color: var(--accent); }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .tags span { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--bone); color: var(--muted); }
+  .tags .hl { background: var(--accent-soft); color: var(--accent); }
+
+  /* 数字卡片 */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .stats .n { font: 500 40px/1 var(--serif); color: var(--accent); }
+  .stats .t { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-weight: 600; }
+  .stats .t i { font-style: normal; color: var(--muted); }
+  .stats p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+
+  /* 内容平台 */
+  .platforms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .platform { display: flex; gap: 14px; align-items: flex-start; }
+  .logo { flex: none; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; color: #fff; font: 600 14px var(--sans); }
+  .logo.wx { background: #07c160; }
+  .logo.github { background: #24292f; }
+  .platform h3 { margin: 0; font-size: 16px; }
+  .platform .id { font-size: 13px; color: var(--accent); }
+  .platform p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+  /* 文章列表 */
+  .posts { display: flex; flex-direction: column; gap: 12px; }
+  .post h3 { font: 500 21px/1.4 var(--serif); margin: 0; }
+  a.post:hover h3 { color: var(--accent); }
+  .post .meta { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .post p { margin: 8px 0 0; color: var(--muted); }
+  .post .more { display: inline-block; margin-top: 10px; font-size: 13px; color: var(--accent); }
+
+  /* 项目 / Skill / 构想 */
+  .grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .proj { display: flex; flex-direction: column; }
+  .proj .em { font-size: 24px; }
+  .proj h3 { font: 500 20px/1.35 var(--serif); margin: 8px 0 6px; }
+  .proj p { margin: 0; color: var(--muted); }
+  .proj .go { margin-top: auto; padding-top: 12px; font-size: 13px; color: var(--accent); }
+  .skill h3 { font-size: 16px; margin: 0; }
+  .skill code { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); margin-left: 6px; }
+  .skill p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+  .note { font-size: 13px; color: var(--muted); margin: -8px 0 16px; }
+
+  /* 侧边栏 */
+  aside { display: flex; flex-direction: column; gap: 16px; }
+  .sticky { display: flex; flex-direction: column; gap: 16px; }
+  .about { text-align: left; }
+  .about .who { display: flex; gap: 14px; align-items: center; }
+  .about img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
+  .about b { font: 600 18px var(--serif); display: block; }
+  .about small { color: var(--muted); font-size: 13px; }
+  .about p { margin: 14px 0 0; font-size: 14px; color: var(--muted); }
+  .widget h4 { margin: 0 0 10px; font-size: 13px; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; }
+  .links { list-style: none; margin: 0; padding: 0; font-size: 14px; }
+  .links li { padding: 7px 0; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 8px; }
+  .links li:first-child { border-top: 0; padding-top: 0; }
+  .links a:hover { color: var(--accent); }
+  .links span { color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips span { font-size: 12px; padding: 3px 10px; border-radius: 999px; background: var(--bone); }
+
+  /* 关注公众号弹窗 */
+  .follow { width: min(560px, calc(100vw - 32px)); padding: 28px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); text-align: center; }
+  .follow::backdrop { background: rgba(20, 18, 12, .45); backdrop-filter: blur(3px); }
+  .follow h3 { margin: 0; font: 500 24px var(--serif); }
+  .follow p { margin: 6px 0 20px; color: var(--muted); font-size: 14px; }
+  .follow img { display: block; width: 100%; height: auto; border-radius: 10px; }
+  .follow .row { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+  .follow button { font: inherit; cursor: pointer; border: 0; }
+  .follow .ghost { padding: 8px 16px; border-radius: 8px; background: var(--bone); color: var(--ink); font-size: 14px; }
+  .follow .x { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; background: transparent; color: var(--muted); font-size: 20px; line-height: 1; }
+  .follow .x:hover { background: var(--bone); color: var(--ink); }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0; font-size: 13px; color: var(--muted); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .nav { display: none; }
+    .layout { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .wrap { padding: 0 16px; }
+    .gh { display: none; }
+    .brand { font-size: 16px; letter-spacing: 0.02em; }
+    .stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stats .card { padding: 14px; }
+    .stats .n { font-size: 30px; }
+    .stats p { display: none; }
+    .platforms, .grid2 { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
-  <svg class="icon-definitions" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
-    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
-    <symbol id="icon-up-right" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6h12v12"/></symbol>
-    <symbol id="icon-spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"/></symbol>
-    <symbol id="icon-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/></symbol>
-    <symbol id="icon-route" viewBox="0 0 24 24"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/><path d="M15 6h3v9M6 9v9h9"/></symbol>
-    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
-    <symbol id="icon-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="m15 9 6-6"/></symbol>
-  </defs></svg>
-  <a class="skip-link" href="#main">跳至主要内容</a>
-  <div class="announcement"><span>在人的需求与 AI 的可能之间。</span><a href="#about">认识汪泽雨 <svg class="icon"><use href="#icon-arrow"/></svg></a></div>
-  <header class="header" id="site-header"><div class="nav-inner wrap">
-    <a class="brand" href="#home" aria-label="汪泽雨，返回首页"><span class="brand-symbol" aria-hidden="true">w.</span><span>汪泽雨</span></a>
-    <nav class="desktop-nav" aria-label="主导航"><a href="#about">关于我</a><a href="#explorations">产品探索</a><a href="#approach">工作方式</a></nav>
-    <a class="nav-contact" href="#contact">保持连接 <svg class="icon"><use href="#icon-up-right"/></svg></a>
-    <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="展开导航"><span></span><span></span></button>
-    <nav class="mobile-nav" id="mobile-nav" aria-label="手机导航" hidden><a href="#about">关于我</a><a href="#explorations">产品探索</a><a href="#approach">工作方式</a><a href="#contact">保持连接 ↗</a></nav>
-  </div></header>
-  <main id="main">
-    <section class="hero" id="home" aria-labelledby="hero-title">
-      <img class="hero-photo" src="assets/hero-golden-hour.jpg" alt="夕阳下的开阔草地与远山" width="1774" height="887" fetchpriority="high">
-      <div class="hero-content wrap"><p class="eyebrow hero-eyebrow">汪泽雨 <span>/</span> AI 产品经理</p><h1 id="hero-title">以人的需求为起点，<br>让 AI 成为好用的产品。</h1><p class="hero-intro">理解真实的问题，探索技术的可能。<br>让每一次智能体验，都更自然一点。</p><a class="button button-primary" href="#explorations">探索我的产品构想 <svg class="icon"><use href="#icon-arrow"/></svg></a></div>
-      <div class="hero-overlays wrap" aria-label="产品思考片段"><div class="glass-card insight-card"><div class="card-kicker"><svg class="icon"><use href="#icon-spark"/></svg><span>一个值得追问的问题</span><span class="tiny-mark">01</span></div><p>用户需要的，<br>究竟是一个回答，<br>还是把一件事做好？</p><div class="card-foot"><span>从真实场景出发</span><svg class="icon"><use href="#icon-up-right"/></svg></div></div><div class="glass-card journey-card"><div class="card-kicker"><svg class="icon"><use href="#icon-route"/></svg><span>从想法，到体验</span></div><div class="journey-row"><span class="journey-check"><svg class="icon"><use href="#icon-check"/></svg></span><span>发现一个真实问题</span><span class="journey-state">理解</span></div><div class="journey-row"><span class="journey-check"><svg class="icon"><use href="#icon-check"/></svg></span><span>做出可体验的原型</span><span class="journey-state">验证</span></div><div class="journey-row"><span class="journey-dot"></span><span>在反馈中继续迭代</span><span class="journey-state">探索中</span></div></div></div>
-      <div class="hero-caption"><span>A LITTLE CURIOSITY. A BETTER EXPERIENCE.</span><a href="#about" aria-label="向下浏览关于我">向下探索 <span>↓</span></a></div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#">博观而约取，厚积而薄发</a>
+    <nav class="nav">
+      <a href="#writing">文章</a><a href="#projects">项目</a><a href="#skills">Skill</a><a href="#platforms">平台</a><a href="#about">关于</a>
+    </nav>
+    <a class="btn" href="#platforms" data-follow>关注公众号</a>
+    <a class="gh" href="https://github.com/wangzeyu846-dot">GitHub ↗</a>
+  </div>
+</header>
+
+<div class="wrap layout">
+  <main>
+    <section class="block stats">
+      <a class="card" href="#writing"><div class="n">3</div><div class="t">文章 <i>→</i></div><p>公众号 BizSingularity</p></a>
+      <a class="card" href="#projects"><div class="n">4</div><div class="t">项目 <i>→</i></div><p>开源在 GitHub</p></a>
+      <a class="card" href="#skills"><div class="n">2</div><div class="t">Skill <i>→</i></div><p>给 Codex 用的技能</p></a>
     </section>
-    <section class="focus-strip" aria-label="关注领域"><div class="wrap"><p>持续关注的三个方向</p><div class="focus-topics"><span><svg class="icon"><use href="#icon-layers"/></svg>AI 应用与知识体验</span><span><svg class="icon"><use href="#icon-route"/></svg>Agent 与人机协作</span><span><svg class="icon"><use href="#icon-target"/></svg>产品验证与迭代</span></div></div></section>
-    <section class="about wrap section-space" id="about" aria-labelledby="about-title"><div class="section-label">01 — ABOUT ME</div><div class="about-grid"><h2 id="about-title"><a href="https://mp.weixin.qq.com/s/-E52FCfy5ZJlVtX7P78rBQ" target="_blank" rel="noopener noreferrer" aria-label="我关注的，是技术之后的体验。（在新标签页打开微信文章）">我关注的，<br>是技术之后的体验。</a></h2><div class="about-copy"><p>你好，我是汪泽雨，一名 AI 产品经理。<br>我关心 AI 能做什么，更关心它如何真正帮到人。</p><p>从具体的使用场景出发，把模糊的想法变成清晰的问题，再通过原型与反馈寻找答案。让复杂留在背后，把简单留给使用的人。</p><a class="inline-link" href="#approach">了解我的工作方式 <svg class="icon"><use href="#icon-arrow"/></svg></a></div></div></section>
-    <section class="explorations wrap section-space" id="explorations" aria-labelledby="explorations-title"><div class="section-label">02 — PRODUCT EXPLORATIONS</div><div class="section-heading"><h2 id="explorations-title">让想法，<br class="mobile-break">向前一步。</h2><p>三个关于 AI 产品的概念提案。<br>从问题出发，让思考变得可见。</p></div>
-      <div class="project-tabs" id="project-tabs" role="tablist" aria-label="选择产品探索方向"><button role="tab" id="tab-knowledge" aria-controls="panel-knowledge" aria-selected="true" tabindex="0"><svg class="icon"><use href="#icon-layers"/></svg>知识助手<span>01</span></button><button role="tab" id="tab-agent" aria-controls="panel-agent" aria-selected="false" tabindex="-1"><svg class="icon"><use href="#icon-route"/></svg>任务协作<span>02</span></button><button role="tab" id="tab-evaluation" aria-controls="panel-evaluation" aria-selected="false" tabindex="-1"><svg class="icon"><use href="#icon-target"/></svg>体验评测<span>03</span></button></div>
-      <div class="project-panel" id="panel-knowledge" role="tabpanel" aria-labelledby="tab-knowledge" tabindex="0"><div class="project-copy"><span class="concept-badge">概念提案 / 知识管理 × RAG</span><h3>让收藏的知识，<br>重新产生连接。</h3><p>一个有来源、可追溯的个人知识助手。<br>让读过、写过、收藏过的内容，在需要时重新发挥价值。</p><ul class="project-points"><li>从自然语言问题，找到相关资料</li><li>答案连接原文，判断保留在人手中</li><li>资料不足时，清楚地说明边界</li></ul><button class="inline-link" data-project="knowledge">查看完整构想 <svg class="icon"><use href="#icon-arrow"/></svg></button></div><div class="project-visual knowledge-visual" aria-label="个人知识助手概念界面"><div class="knowledge-app"><div class="app-toolbar"><span class="app-brand"><svg class="icon"><use href="#icon-spark"/></svg>知序</span><span class="app-tag">你的知识，有迹可循</span></div><div class="app-main"><div class="mock-avatar">我</div><div class="question-bubble">如何让 AI 的回答更值得信任？</div><div class="assistant-heading"><svg class="icon"><use href="#icon-spark"/></svg><span>从你的资料中，找到一些线索</span></div><p class="answer-text">让答案与原始出处连接，是建立信任的一个起点。把判断依据展示出来，让用户能够核实和追问。</p><div class="citation-card"><span class="document-icon">≡</span><div><strong>关于可信 AI 的产品笔记</strong><span>来源片段 · 点击可回溯的设计示意</span></div><svg class="icon"><use href="#icon-up-right"/></svg></div><div class="mock-prompt"><span>继续追问你的知识库…</span><span class="send-icon">↑</span></div></div></div><div class="floating-note"><svg class="icon"><use href="#icon-check"/></svg><span>每一个答案，都有出处。</span></div><span class="visual-caption">产品概念界面 · 非上线功能</span></div></div>
-      <div class="project-panel" id="panel-agent" role="tabpanel" aria-labelledby="tab-agent" tabindex="0" hidden><div class="project-copy"><span class="concept-badge">概念提案 / AI Agent × 工作流</span><h3>从一次对话，<br>到一件事的完成。</h3><p>一个过程透明的任务协作助手。让 AI 拆解目标、提出计划，并在人的判断下逐步推进。</p><ul class="project-points"><li>执行前看见计划，随时调整方向</li><li>关键步骤确认，把选择权交给用户</li><li>明确进度和异常，让过程可以掌控</li></ul><button class="inline-link" data-project="agent">查看完整构想 <svg class="icon"><use href="#icon-arrow"/></svg></button></div><div class="project-visual agent-visual" aria-label="任务协作助手概念界面"><div class="agent-app"><div class="app-toolbar"><span class="app-brand"><svg class="icon"><use href="#icon-route"/></svg>共作</span><span class="app-tag">你定方向，AI 向前一步</span></div><div class="agent-task"><span>本次任务</span><h4>为一个新想法，整理调研计划</h4><div class="task-progress"><i></i></div></div><div class="agent-step"><span class="step-status">✓</span><div><strong>理解目标与范围</strong><p>先明确要回答的问题</p></div><small>已梳理</small></div><div class="agent-step"><span class="step-status">✓</span><div><strong>拆解研究步骤</strong><p>将复杂任务变成行动清单</p></div><small>已规划</small></div><div class="agent-step awaiting"><span class="step-status">3</span><div><strong>确认后，继续执行</strong><p>关键选择，由你决定</p></div><small>待确认</small></div><div class="mock-approval"><span>调整计划</span><span>确认下一步 →</span></div></div><span class="visual-caption">产品概念界面 · 非实际执行状态</span></div></div>
-      <div class="project-panel" id="panel-evaluation" role="tabpanel" aria-labelledby="tab-evaluation" tabindex="0" hidden><div class="project-copy"><span class="concept-badge">概念提案 / 产品体验 × 评测</span><h3>不止是“很聪明”，<br>更要真的好用。</h3><p>一个 AI 产品体验观察台。把主观感受转化为可讨论、可比较、可改进的具体问题。</p><ul class="project-points"><li>用真实任务定义“好用”的标准</li><li>同时观察答案质量与交互体验</li><li>保留判断依据，让评测指导迭代</li></ul><button class="inline-link" data-project="evaluation">查看完整构想 <svg class="icon"><use href="#icon-arrow"/></svg></button></div><div class="project-visual evaluation-visual" aria-label="体验评测工具概念界面"><div class="evaluation-app"><div class="app-toolbar"><span class="app-brand"><svg class="icon"><use href="#icon-target"/></svg>体验观察台</span><span class="app-tag">一次体验，一条线索</span></div><div class="evaluation-heading"><span>场景：从资料中找到答案</span><h4>什么才是一次好的体验？</h4></div><div class="evaluation-row"><span>01</span><div><strong>有用</strong><p>有没有解决眼前的问题？</p></div><span class="evaluation-pill">任务价值</span></div><div class="evaluation-row"><span>02</span><div><strong>可信</strong><p>能不能理解和核实答案？</p></div><span class="evaluation-pill">判断依据</span></div><div class="evaluation-row"><span>03</span><div><strong>易用</strong><p>过程是否清晰、自然？</p></div><span class="evaluation-pill">交互体验</span></div><div class="evaluation-footer">记录真实反馈，再决定下一步。</div></div><span class="visual-caption">产品概念界面 · 非实际评测结果</span></div></div>
-      <p class="concept-note">以上为展示产品思路的概念提案，不代表已上线项目或工作履历。</p>
+
+    <section class="block" id="platforms">
+      <div class="head"><h2>内容平台</h2><span>在这些地方找到我</span></div>
+      <div class="platforms">
+        <a class="card platform" href="#platforms" data-follow>
+          <div class="logo wx">微</div>
+          <div><h3>微信公众号</h3><div class="id">BizSingularity</div><p>AI 产品、Agent 与商业的观察和思考。点击扫码关注。</p></div>
+        </a>
+        <a class="card platform" href="https://github.com/wangzeyu846-dot">
+          <div class="logo github">GH</div>
+          <div><h3>GitHub</h3><div class="id">wangzeyu846-dot</div><p>我开源的 AI Skill 和产品原型，都可以直接下载使用。</p></div>
+        </a>
+      </div>
     </section>
-    <section class="philosophy" aria-labelledby="philosophy-title"><div class="wrap philosophy-grid"><div class="philosophy-art"><div class="photo-frame"><img src="assets/hero-golden-hour.jpg" alt="暖色光线中的草地与远山" loading="lazy" width="480" height="430"></div><div class="translucent-sheet sheet-one"></div><div class="translucent-sheet sheet-two"></div><div class="thought-note"><span>THE HUMAN PART</span><p>先理解人，<br>再谈智能。</p><svg class="icon"><use href="#icon-up-right"/></svg></div></div><div class="philosophy-copy"><span class="section-label">THE WAY I SEE IT</span><h2 id="philosophy-title">好的 AI 产品，<br>应该让人<br>更从容一点。</h2><p>减少一次重复操作，理清一个复杂问题，<br>或者让一个想法更快成为现实。<br>价值，藏在这些具体的时刻里。</p><a class="button button-outline" href="#approach">从一个好问题开始 <svg class="icon"><use href="#icon-arrow"/></svg></a></div></div></section>
-    <section class="approach wrap section-space" id="approach" aria-labelledby="approach-title"><div class="section-label">03 — HOW I WORK</div><div class="section-heading"><h2 id="approach-title">把好奇心，<br class="mobile-break">变成下一步。</h2><p>从理解问题，到验证价值。<br>让每一步，都更接近真实需求。</p></div><div class="process-grid"><article class="process-step"><span class="process-number">01</span><h3>发现问题</h3><p>回到具体场景，理解谁遇到了什么困难，以及它为什么值得解决。</p><span class="process-tag">倾听 · 观察 · 追问</span></article><article class="process-step"><span class="process-number">02</span><h3>定义价值</h3><p>找到 AI 能改善的关键环节，同时看清能力边界与使用成本。</p><span class="process-tag">场景 · 假设 · 取舍</span></article><article class="process-step"><span class="process-number">03</span><h3>做出体验</h3><p>把抽象讨论变成可交互的原型，让想法尽早接受真实反馈。</p><span class="process-tag">原型 · 验证 · 反馈</span></article><article class="process-step"><span class="process-number">04</span><h3>持续迭代</h3><p>结合体验观察与评测结果，找到有效变化，再向前推进一步。</p><span class="process-tag">评测 · 复盘 · 改进</span></article></div></section>
-    <section class="contact-atmosphere" id="contact" aria-labelledby="contact-title"><div class="wrap contact-grid"><div><span class="section-label">04 — LET’S CONNECT</span><h2 id="contact-title">下一个好想法，<br>从一次对话开始。</h2><p>关于 AI 产品、用户体验，或者一个值得尝试的新想法。</p></div><div class="contact-card"><div class="contact-avatar" aria-hidden="true">汪</div><div class="contact-identity"><strong>汪泽雨</strong><span>AI 产品经理</span></div><div id="contact-channel"><span class="contact-pending">联系方式待补充</span></div><button class="button button-primary" id="copy-intro">复制个人介绍 <svg class="icon"><use href="#icon-arrow"/></svg></button></div></div></section>
+
+    <section class="block" id="writing">
+      <div class="head"><h2>最近在写</h2><span>公众号 · BizSingularity</span></div>
+      <div class="posts">
+        <a class="card post" href="https://mp.weixin.qq.com/s/-E52FCfy5ZJlVtX7P78rBQ">
+          <h3>从许愿到判断：AI 时代，产品经理到底该懂什么</h3>
+          <div class="meta">2026-11-01 · 公众号 · 约 15 分钟</div>
+          <p>用 AI 做了一堆产品后，我发现作品都带着一股「AI 味儿」。当人人都能把东西做出来，产品经理真正要练的，是从许愿走向判断。</p>
+          <span class="more">继续读 →</span>
+        </a>
+        <a class="card post" href="https://mp.weixin.qq.com/s/H-gXRdloV8S_MD4x3KYpRA">
+          <h3>当 AI 让平庸的正确彻底通胀，什么是真正无法外包的底牌？</h3>
+          <div class="meta">2026-10-26 · 公众号 · 约 8 分钟</div>
+          <p>当 80 分的答案免费，思考的溢价去了哪？「平庸的正确」越来越多，真正的确定性反而越来越少。</p>
+          <span class="more">继续读 →</span>
+        </a>
+        <a class="card post" href="https://mp.weixin.qq.com/s/MZgpJAre2ICSy2esI4P4eg">
+          <h3>告别对话框：Personal AI Agent 的「去界面化」与终极商业暗战</h3>
+          <div class="meta">2026-10-25 · 公众号 · 约 10 分钟</div>
+          <p>个人 Agent 正从「提供建议的 Chatbot」变成「替你动手的 Operator」，它撞上的不只是模型边界，还有巨头利益、支付风控与信任危机。</p>
+          <span class="more">继续读 →</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="block" id="projects">
+      <div class="head"><h2>项目</h2><a href="https://github.com/wangzeyu846-dot?tab=repositories">全部仓库 →</a></div>
+      <div class="grid2">
+        <a class="card proj" href="https://github.com/wangzeyu846-dot/ai-product-business-teardown">
+          <span class="em">🔍</span>
+          <h3>AI 产品深度拆解</h3>
+          <p>把产品体验、市场定位、商业模式、Agent 架构、模型成本和壁垒放进同一套证据框架，关键结论截图取证、二次核实。</p>
+          <div class="tags"><span class="hl">AI 产品</span><span>方法论</span><span>Codex Skill</span></div>
+          <span class="go">查看 →</span>
+        </a>
+        <a class="card proj" href="https://github.com/wangzeyu846-dot/ai-news-skill">
+          <span class="em">📰</span>
+          <h3>AI 资讯快报</h3>
+          <p>说一句「给我 AI 资讯」，搜集最近三天的全球 AI 动态，核验去重后整理成中文飞书文档，附产品介绍网站。</p>
+          <div class="tags"><span class="hl">内容产品</span><span>信源核验</span><span>飞书</span></div>
+          <span class="go">查看 →</span>
+        </a>
+        <a class="card proj" href="https://github.com/wangzeyu846-dot/douyin-landing-page">
+          <span class="em">🎬</span>
+          <h3>抖音精选 · 落地页原型</h3>
+          <p>非官方的产品落地页交互实验：电影式首屏转场、可交互手机演示、响应式与动效降级。仅作学习与设计展示。</p>
+          <div class="tags"><span class="hl">交互原型</span><span>React</span><span>GSAP</span></div>
+          <span class="go">查看 →</span>
+        </a>
+        <a class="card proj" href="https://github.com/wangzeyu846-dot/wangzeyu846-dot.github.io">
+          <span class="em">🌐</span>
+          <h3>个人网站</h3>
+          <p>就是你正在看的这个网站，从设计到上线独立完成，部署在 GitHub Pages。</p>
+          <div class="tags"><span>HTML</span><span>CSS</span><span>GitHub Pages</span></div>
+          <span class="go">查看源码 →</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="block" id="skills">
+      <div class="head"><h2>我的 Skill</h2><a href="https://github.com/wangzeyu846-dot?tab=repositories">全部仓库 →</a></div>
+      <div class="grid2">
+        <a class="card skill" href="https://github.com/wangzeyu846-dot/ai-product-business-teardown">
+          <h3>🔍 AI 产品拆解<code>ai-product-business-teardown</code></h3>
+          <p>五层框架拆解一个 AI 产品，输出带证据的完整报告</p>
+          <div class="tags"><span class="hl">AI 产品</span></div>
+        </a>
+        <a class="card skill" href="https://github.com/wangzeyu846-dot/ai-news-skill">
+          <h3>📰 AI 资讯快报<code>ai-news</code></h3>
+          <p>最近 72 小时的全球 AI 动态，整理成中文飞书文档</p>
+          <div class="tags"><span class="hl">内容</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="head"><h2>正在思考</h2><span>概念提案，非上线产品</span></div>
+      <div class="grid2">
+        <div class="card proj"><span class="em">📚</span><h3>知序 · 有出处的知识助手</h3><p>答案连接原文，资料不足时说清边界，判断留在人手里。</p><div class="tags"><span>知识管理</span><span>RAG</span></div></div>
+        <div class="card proj"><span class="em">🤝</span><h3>共作 · 过程透明的任务协作</h3><p>AI 拆解目标、提出计划，关键步骤由人确认，过程可控。</p><div class="tags"><span>Agent</span><span>工作流</span></div></div>
+        <div class="card proj"><span class="em">🧪</span><h3>体验观察台 · AI 产品评测</h3><p>用真实任务定义「好用」，从有用、可信、易用三个维度记录体验。</p><div class="tags"><span>体验</span><span>评测</span></div></div>
+      </div>
+    </section>
   </main>
-  <footer class="footer"><div class="wrap"><div class="footer-main"><div class="footer-identity"><a href="#home" class="footer-brand">汪泽雨<span>WANG ZEYU</span></a><p>保持好奇，把产品做好。</p></div><div class="footer-column"><h2>在这里</h2><a href="#about">关于我</a><a href="#explorations">产品探索</a><a href="#approach">工作方式</a></div><div class="footer-column"><h2>保持连接</h2><a href="#contact">联系入口</a><a href="https://github.com/wangzeyu846-dot" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div><div class="footer-note"><span>HUMAN FIRST.<br>ALWAYS CURIOUS.</span><a href="#home">回到顶部 ↑</a></div></div><div class="footer-bottom"><span>© <span id="year">2026</span> 汪泽雨</span><span>Designed with intention.</span></div></div></footer>
-  <dialog class="project-dialog" id="project-dialog" aria-labelledby="dialog-title"><div class="dialog-top"><span>PRODUCT EXPLORATION</span><button class="dialog-close" aria-label="关闭项目详情">×</button></div><div id="dialog-content"></div><div class="dialog-footer"><span>概念提案 · 非上线产品</span><button class="button button-primary dialog-done">继续探索 <svg class="icon"><use href="#icon-arrow"/></svg></button></div></dialog>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <aside id="about">
+    <div class="sticky">
+      <div class="card about">
+        <div class="who">
+          <img src="https://avatars.githubusercontent.com/u/337912173?v=4" alt="汪泽雨的头像">
+          <div><b>汪泽雨</b><small>AI 产品经理</small></div>
+        </div>
+        <p>习惯把一个 AI 产品拆开来看：它解决的是不是真问题，用户为什么愿意持续用，钱从哪里来、成本能不能打平。比起模型有多聪明，我更在意它能不能在真实场景里落地、跑通、留下来。</p>
+      </div>
+
+      <div class="card widget">
+        <h4>近期文章</h4>
+        <ul class="links">
+          <li><a href="https://mp.weixin.qq.com/s/-E52FCfy5ZJlVtX7P78rBQ">从许愿到判断：AI 时代，产品经理到底该懂什么</a></li>
+          <li><a href="https://mp.weixin.qq.com/s/H-gXRdloV8S_MD4x3KYpRA">当 AI 让平庸的正确彻底通胀，什么是真正无法外包的底牌？</a></li>
+          <li><a href="https://mp.weixin.qq.com/s/MZgpJAre2ICSy2esI4P4eg">告别对话框：Personal AI Agent 的「去界面化」</a></li>
+        </ul>
+      </div>
+
+      <div class="card widget">
+        <h4>常用 AI 工具</h4>
+        <div class="chips"><span>Claude Code</span><span>Codex</span><span>Cursor</span><span>VS Code</span><span>DeepSeek Harness</span><span>Antigravity</span><span>Pi Agent</span></div>
+      </div>
+
+      <div class="card widget">
+        <h4>找到我</h4>
+        <ul class="links">
+          <li>微信公众号<span>BizSingularity</span></li>
+          <li><a href="https://github.com/wangzeyu846-dot">GitHub</a><span>wangzeyu846-dot</span></li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <div class="wrap"><span>© 2026 汪泽雨</span><span>微信公众号 BizSingularity · <a href="https://github.com/wangzeyu846-dot">GitHub</a></span></div>
+</footer>
+
+<dialog class="follow" id="follow" aria-labelledby="follow-title">
+  <button class="x" type="button" aria-label="关闭" data-close>×</button>
+  <h3 id="follow-title">关注公众号</h3>
+  <p>微信扫一扫二维码，或在微信里搜索 BizSingularity</p>
+  <img src="assets/wechat-qr.webp" width="2000" height="543" alt="公众号 BizSingularity 的二维码">
+  <div class="row">
+    <button class="btn" type="button" data-copy>复制公众号名</button>
+    <button class="ghost" type="button" data-close>关闭</button>
+  </div>
+</dialog>
+
+<script>
+  const dlg = document.getElementById('follow');
+  const copyBtn = dlg.querySelector('[data-copy]');
+  document.querySelectorAll('[data-follow]').forEach(el => el.addEventListener('click', e => {
+    if (!dlg.showModal) return;
+    e.preventDefault();
+    copyBtn.textContent = '复制公众号名';
+    dlg.showModal();
+  }));
+  dlg.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', () => dlg.close()));
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+  copyBtn.addEventListener('click', async () => {
+    const name = 'BizSingularity';
+    try {
+      await navigator.clipboard.writeText(name);
+    } catch {
+      const t = document.createElement('textarea');
+      t.value = name; dlg.append(t); t.select(); document.execCommand('copy'); t.remove();
+    }
+    copyBtn.textContent = '已复制，去微信搜索吧';
+  });
+</script>
+
 </body>
 </html>

@@ -8,6 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'scripts'))
 SPEC = importlib.util.spec_from_file_location("build_site", ROOT / "scripts/build_site.py")
 build = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(build)
@@ -16,12 +17,22 @@ TEMPLATE = """<!doctype html><title>Keep me</title>
 <div id="count"><!-- article-count:start -->old<!-- article-count:end --></div>
 <div class="posts"><!-- articles:start -->old<!-- articles:end --></div>
 <ul><!-- recent-articles:start -->old<!-- recent-articles:end --></ul>
+<div><!-- project-count:start -->old<!-- project-count:end --></div>
+<section><!-- projects:start -->old<!-- projects:end --></section>
 <script>window.keep = true;</script>"""
 
 
 def article(number, **changes):
     item = dict(url=f"https://mp.weixin.qq.com/s/post{number}", title=f"文章{number}",
                 date=f"2026-11-{number:02d}", summary=f"摘要{number}")
+    item.update(changes)
+    return item
+
+
+def project(name='demo', **changes):
+    item = dict(name=name, title='演示项目', url=f'https://github.com/wangzeyu846-dot/{name}',
+                description='项目简介', tags=['AI 产品'], emoji='🧩',
+                created_at='2026-11-04T08:00:00Z')
     item.update(changes)
     return item
 
@@ -81,6 +92,7 @@ class BuildTests(unittest.TestCase):
         (source / 'manage.html').write_text('<title>同步文章</title>')
         (source / 'data').mkdir()
         (source / 'data/articles.json').write_text(json.dumps([article(1)]))
+        (source / 'data/projects.json').write_text(json.dumps([project()]))
         (source / 'assets').mkdir()
         (source / 'assets/logo.svg').write_text('<svg></svg>')
         (source / '.env').write_text('do-not-publish')
@@ -103,6 +115,64 @@ class BuildTests(unittest.TestCase):
             files = {p.relative_to(output).as_posix() for p in output.rglob('*') if p.is_file()}
             self.assertEqual(files, {'index.html', 'manage.html', 'assets/logo.svg'})
             self.assertIn('文章1', (output / 'index.html').read_text())
+
+    def test_new_project_updates_cards_count_and_keeps_article_and_script(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = self.make_source(Path(directory))
+            (source / 'data/projects.json').write_text(json.dumps([
+                project('older', title='原项目'),
+                project('idea-kickoff', title='想法开工', created_at='2026-11-18T08:00:00Z')]))
+            fake = type('ArticleLoader', (), {'load_articles': staticmethod(
+                lambda path: json.loads(path.read_text()))})
+            output = Path(directory) / 'dist'
+            with patch.dict(sys.modules, {'articles': fake}):
+                build.build_site(source, output)
+            page = (output / 'index.html').read_text()
+            self.assertIn('<!-- project-count:start -->2<!-- project-count:end -->', page)
+            self.assertEqual(page.count('class="card proj"'), 2)
+            self.assertLess(page.index('想法开工'), page.index('原项目'))
+            self.assertIn('<!-- article-count:start -->1<!-- article-count:end -->', page)
+            self.assertIn('文章1', page)
+            self.assertIn('<script>window.keep = true;</script>', page)
+
+    def test_project_text_cannot_inject_html(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = self.make_source(Path(directory))
+            (source / 'data/projects.json').write_text(json.dumps([project(
+                title='<img src=x onerror="bad">', description='<script>bad()</script>',
+                tags=['<svg onload="bad">'], emoji='<b>')]))
+            fake = type('ArticleLoader', (), {'load_articles': staticmethod(
+                lambda path: json.loads(path.read_text()))})
+            output = Path(directory) / 'dist'
+            with patch.dict(sys.modules, {'articles': fake}):
+                build.build_site(source, output)
+            page = (output / 'index.html').read_text()
+            self.assertIn('&lt;img src=x onerror=&quot;bad&quot;&gt;', page)
+            self.assertIn('&lt;script&gt;bad()&lt;/script&gt;', page)
+            self.assertIn('&lt;svg onload=&quot;bad&quot;&gt;', page)
+            self.assertNotIn('<img src=x', page)
+            self.assertNotIn('<script>bad()', page)
+
+    def test_broken_project_data_or_markers_keep_previous_build(self):
+        variants = [([], TEMPLATE),
+                    ([project(url='javascript:alert(1)')], TEMPLATE),
+                    ([project()], TEMPLATE.replace('<!-- projects:start -->', '')),
+                    ([project()], TEMPLATE + '<!-- project-count:end -->'),
+                    ([project()], TEMPLATE.replace('<!-- projects:start -->old<!-- projects:end -->',
+                                                  '<!-- projects:end -->old<!-- projects:start -->'))]
+        for data, template in variants:
+            with self.subTest(data=data, template=template), tempfile.TemporaryDirectory() as directory:
+                source = self.make_source(Path(directory))
+                (source / 'data/projects.json').write_text(json.dumps(data))
+                (source / 'index.html').write_text(template)
+                output = Path(directory) / 'dist'
+                output.mkdir()
+                (output / 'index.html').write_text('previous site')
+                fake = type('ArticleLoader', (), {'load_articles': staticmethod(
+                    lambda path: json.loads(path.read_text()))})
+                with patch.dict(sys.modules, {'articles': fake}), self.assertRaises(ValueError):
+                    build.build_site(source, output)
+                self.assertEqual((output / 'index.html').read_text(), 'previous site')
 
     def test_asset_symlink_is_not_followed_and_previous_build_survives(self):
         with tempfile.TemporaryDirectory() as directory:

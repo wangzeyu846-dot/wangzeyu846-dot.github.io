@@ -1,7 +1,10 @@
-name: 同步文章并发布网站
-run-name: ${{ github.event_name == 'workflow_dispatch' && '同步公众号文章' || '更新个人网站' }}
+name: 同步内容并发布网站
+run-name: ${{ github.event_name == 'workflow_dispatch' && inputs.article_url != '' && '同步公众号文章' || '同步 GitHub 项目并更新网站' }}
 
 on:
+  schedule:
+    # 每 6 小时检查项目，避开整点；GitHub 排队可能延迟。
+    - cron: '41 */6 * * *'
   push:
     branches: [main]
     paths:
@@ -9,14 +12,15 @@ on:
       - 'manage.html'
       - 'assets/**'
       - 'data/articles.json'
+      - 'data/projects.json'
       - 'scripts/**'
       - 'tests/**'
       - '.github/workflows/sync-article.yml'
   workflow_dispatch:
     inputs:
       article_url:
-        description: '文章链接（必填）'
-        required: true
+        description: '文章链接（同步文章时填写；全部留空则立即刷新项目）'
+        required: false
         type: string
       article_title:
         description: '文章标题（选填；无法读取时补填）'
@@ -60,11 +64,24 @@ jobs:
         with:
           ref: main
 
-      - name: 验证文章与页面规则
+      - name: 验证内容与页面规则
         run: python3 -B -m unittest discover -s tests -v
 
-      - name: 同步文章信息
+      - name: 检查提交内容
         if: github.event_name == 'workflow_dispatch'
+        env:
+          ARTICLE_URL: ${{ inputs.article_url }}
+          ARTICLE_TITLE: ${{ inputs.article_title }}
+          ARTICLE_DATE: ${{ inputs.article_date }}
+          ARTICLE_SUMMARY: ${{ inputs.article_summary }}
+        run: |
+          if [ -z "$ARTICLE_URL" ] && [ -n "$ARTICLE_TITLE$ARTICLE_DATE$ARTICLE_SUMMARY" ]; then
+            echo '::error::同步文章请补上文章链接；只刷新项目时请将四个字段全部留空。'
+            exit 1
+          fi
+
+      - name: 同步文章信息
+        if: github.event_name == 'workflow_dispatch' && inputs.article_url != ''
         env:
           ARTICLE_URL: ${{ inputs.article_url }}
           ARTICLE_TITLE: ${{ inputs.article_title }}
@@ -72,20 +89,25 @@ jobs:
           ARTICLE_SUMMARY: ${{ inputs.article_summary }}
         run: python3 scripts/articles.py
 
+      - name: 同步 GitHub 公开项目
+        if: github.event_name != 'workflow_dispatch' || inputs.article_url == ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/projects.py
+
       - name: 生成完整网站
         run: python3 scripts/build_site.py
 
-      - name: 保存文章目录
-        if: github.event_name == 'workflow_dispatch'
+      - name: 保存内容目录
         run: |
-          if git diff --quiet -- data/articles.json; then
-            echo "文章目录已是最新，无需重复提交。"
+          if git diff --quiet -- data/articles.json data/projects.json; then
+            echo "文章和项目目录已是最新，无需重复提交。"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- data/articles.json
-          git commit -m "content: 同步公众号文章"
+          git add -- data/articles.json data/projects.json
+          git commit -m "content: 同步网站内容"
           git push origin HEAD:main
 
       - name: 配置网站发布
@@ -104,3 +126,4 @@ jobs:
         run: |
           echo '### 网站已更新' >> "$GITHUB_STEP_SUMMARY"
           echo '[打开个人网站查看文章](https://wangzeyu846-dot.github.io/#writing)' >> "$GITHUB_STEP_SUMMARY"
+          echo '[查看最新项目](https://wangzeyu846-dot.github.io/#projects)' >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,67 @@
+[
+  {
+    "name": "idea-kickoff",
+    "title": "想法开工",
+    "url": "https://github.com/wangzeyu846-dot/idea-kickoff",
+    "description": "想法开工：面向非技术产品经理和创业者的 AI 产品开发工具包。从一句想法开始，让 AI 整理需求、分阶段实现与验证，你负责判断价值、确认结果。",
+    "tags": [
+      "AI 产品",
+      "低门槛开发",
+      "MVP"
+    ],
+    "emoji": "🚀",
+    "created_at": "2026-11-18T12:49:09Z"
+  },
+  {
+    "name": "wangzeyu846-dot.github.io",
+    "title": "个人网站",
+    "url": "https://github.com/wangzeyu846-dot/wangzeyu846-dot.github.io",
+    "description": "汪泽雨 · AI 产品经理的个人网站",
+    "tags": [
+      "个人作品集",
+      "产品思考",
+      "开源项目"
+    ],
+    "emoji": "🌐",
+    "created_at": "2026-11-02T07:44:01Z"
+  },
+  {
+    "name": "ai-product-business-teardown",
+    "title": "AI 产品深度拆解",
+    "url": "https://github.com/wangzeyu846-dot/ai-product-business-teardown",
+    "description": "面向 Codex 的 AI 产品拆解技能：分析用户体验、商业模式、技术架构与模型成本，通过截图取证和二次核实输出报告。",
+    "tags": [
+      "产品分析",
+      "商业模式",
+      "Codex 技能"
+    ],
+    "emoji": "🔍",
+    "created_at": "2026-10-21T15:26:10Z"
+  },
+  {
+    "name": "ai-news-skill",
+    "title": "AI 资讯快报",
+    "url": "https://github.com/wangzeyu846-dot/ai-news-skill",
+    "description": "面向 Codex 的中文 AI 资讯技能：搜集最近 72 小时的全球 AI 动态，核验去重后整理成带原文链接的飞书文档。",
+    "tags": [
+      "AI 资讯",
+      "信源核验",
+      "飞书文档"
+    ],
+    "emoji": "📰",
+    "created_at": "2026-10-12T12:24:47Z"
+  },
+  {
+    "name": "douyin-landing-page",
+    "title": "抖音精选 · 落地页原型",
+    "url": "https://github.com/wangzeyu846-dot/douyin-landing-page",
+    "description": "非官方抖音产品落地页原型：包含电影式首屏转场、可交互手机演示与响应式布局，用于产品展示和交互设计实践。",
+    "tags": [
+      "交互原型",
+      "动效设计",
+      "响应式布局"
+    ],
+    "emoji": "🎬",
+    "created_at": "2026-10-11T10:16:04Z"
+  }
+]

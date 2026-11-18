@@ -58,6 +58,30 @@ def render_site(template: str, articles: list) -> str:
     return _replace_region(page, "article-count", str(len(ordered)))
 
 
+def render_projects(template: str, projects: list) -> str:
+    from projects import validate_projects
+    ordered = sorted(validate_projects(projects),
+                     key=lambda project: (project["created_at"], project["name"].lower()), reverse=True)
+    cards = []
+    for project in ordered:
+        escape = lambda value: html.escape(value, quote=True)
+        tags = "".join((f'<span class="hl">{escape(tag)}</span>' if index == 0
+                        else f'<span>{escape(tag)}</span>')
+                       for index, tag in enumerate(project["tags"]))
+        label = "查看源码 →" if project["name"] == "wangzeyu846-dot.github.io" else "查看 →"
+        cards.append("\n".join([
+            f'        <a class="card proj" href="{escape(project["url"])}">',
+            f'          <span class="em">{escape(project["emoji"])}</span>',
+            f'          <h3>{escape(project["title"])}</h3>',
+            f'          <p>{escape(project["description"])}</p>',
+            f'          <div class="tags">{tags}</div>',
+            f'          <span class="go">{label}</span>',
+            '        </a>',
+        ]))
+    page = _replace_region(template, "projects", "\n" + "\n".join(cards) + "\n        ")
+    return _replace_region(page, "project-count", str(len(ordered)))
+
+
 def _copy_assets(source: Path, destination: Path) -> None:
     if source.is_symlink() or not source.is_dir():
         raise ValueError("assets 必须是普通资源目录，不能是符号链接。")
@@ -91,14 +115,16 @@ def build_site(source: Path, destination: Path) -> None:
         raise ValueError("发布目录不能放入公开资源目录中。")
     if destination.exists() and not destination.is_dir():
         raise ValueError("发布位置必须是目录。")
-    for name in ["index.html", "manage.html", "data/articles.json"]:
+    for name in ["index.html", "manage.html", "data/articles.json", "data/projects.json"]:
         file = source / name
         if file.is_symlink() or not file.is_file():
             raise ValueError(f"缺少普通文件：{name}")
     # Shared data validation is loaded only when building, to keep rendering reusable.
     from articles import load_articles
+    from projects import load_projects
     articles = load_articles(source / "data/articles.json")
     page = render_site((source / "index.html").read_text(encoding="utf-8"), articles)
+    page = render_projects(page, load_projects(source / "data/projects.json"))
     destination.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".site-build-", dir=destination.parent) as temporary:
         stage, backup = Path(temporary) / "site", Path(temporary) / "previous"

@@ -5,3 +5,10 @@ node_modules/
 *.log
 *.tar.gz
 .openai/
+
+# 本地构建和 Python 缓存
+dist/
+__pycache__/
+*.py[cod]
+.env
+.env.*

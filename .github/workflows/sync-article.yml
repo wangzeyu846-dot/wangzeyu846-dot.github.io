@@ -1,0 +1,106 @@
+name: 同步文章并发布网站
+run-name: ${{ github.event_name == 'workflow_dispatch' && '同步公众号文章' || '更新个人网站' }}
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'manage.html'
+      - 'assets/**'
+      - 'data/articles.json'
+      - 'scripts/**'
+      - 'tests/**'
+      - '.github/workflows/sync-article.yml'
+  workflow_dispatch:
+    inputs:
+      article_url:
+        description: '文章链接（必填）'
+        required: true
+        type: string
+      article_title:
+        description: '文章标题（选填；无法读取时补填）'
+        required: false
+        type: string
+      article_date:
+        description: '发表日期（选填，例如 2026-11-04）'
+        required: false
+        type: string
+      article_summary:
+        description: '文章摘要（选填，一两句话即可）'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+# 发布任务串行执行；每次都读取main最新版本，避免同时更新丢失文章。
+concurrency:
+  group: personal-site-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: >-
+      github.repository == 'wangzeyu846-dot/wangzeyu846-dot.github.io' &&
+      github.ref == 'refs/heads/main' &&
+      (github.event_name != 'workflow_dispatch' || github.actor_id == '337912173')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 获取最新网站
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+
+      - name: 验证文章与页面规则
+        run: python3 -B -m unittest discover -s tests -v
+
+      - name: 同步文章信息
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          ARTICLE_URL: ${{ inputs.article_url }}
+          ARTICLE_TITLE: ${{ inputs.article_title }}
+          ARTICLE_DATE: ${{ inputs.article_date }}
+          ARTICLE_SUMMARY: ${{ inputs.article_summary }}
+        run: python3 scripts/articles.py
+
+      - name: 生成完整网站
+        run: python3 scripts/build_site.py
+
+      - name: 保存文章目录
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          if git diff --quiet -- data/articles.json; then
+            echo "文章目录已是最新，无需重复提交。"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- data/articles.json
+          git commit -m "content: 同步公众号文章"
+          git push origin HEAD:main
+
+      - name: 配置网站发布
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - name: 上传网站文件
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist
+
+      - name: 发布到个人网站
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+
+      - name: 显示完成入口
+        run: |
+          echo '### 网站已更新' >> "$GITHUB_STEP_SUMMARY"
+          echo '[打开个人网站查看文章](https://wangzeyu846-dot.github.io/#writing)' >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>同步公众号文章 · 汪泽雨</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<style>
+:root{color-scheme:light dark;--bg:#f7f7f4;--card:#fbfbf9;--ink:#26251e;--muted:#6f6d64;--line:#e1dfd7;--accent:#8b1e3f;--soft:#f3e6ea}
+@media(prefers-color-scheme:dark){:root{--bg:#16150f;--card:#1b1a15;--ink:#edebe3;--muted:#a29f94;--line:#302e27;--accent:#e07a95;--soft:#3a2029}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}.wrap{max-width:760px;margin:auto;padding:32px 24px 64px}a{color:var(--accent);text-underline-offset:4px}a:focus-visible{outline:3px solid var(--accent);outline-offset:5px}.back{font-size:14px}h1{font:600 clamp(28px,6vw,40px)/1.3 Georgia,"Songti SC",serif;margin:32px 0 14px}.intro{font-size:18px;margin:0 0 24px}.muted,small{color:var(--muted)}.button{display:inline-block;padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--bg);font-weight:600;text-decoration:none}.card{margin-top:28px;padding:22px 24px;border:1px solid var(--line);border-radius:12px;background:var(--card)}h2{font-size:19px;margin:0 0 12px}ol{padding-left:22px;margin:0}li+li{margin-top:16px}p{margin:8px 0}dl{margin:0}dt{font-weight:600;margin-top:16px}dt:first-child{margin-top:0}dd{margin:4px 0 0;color:var(--muted)}code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:.9em;padding:2px 5px;background:var(--soft);border-radius:4px;overflow-wrap:anywhere}.foot{margin-top:28px;font-size:14px}@media(max-width:480px){.wrap{padding:24px 18px 48px}.card{padding:18px}.button{display:block;text-align:center}}
+</style>
+</head>
+<body><main class="wrap">
+<a class="back" href="./">← 返回个人网站</a>
+<h1>同步公众号文章</h1>
+<p class="intro">在公众号发布后，把文章链接提交一次。网站会一起更新文章列表、近期文章和文章数量。</p>
+<p><a class="button" href="https://github.com/wangzeyu846-dot/wangzeyu846-dot.github.io/actions/workflows/sync-article.yml" target="_blank" rel="noopener noreferrer">打开文章同步入口 ↗</a></p>
+<p class="muted"><small>入口在新窗口打开。使用 wangzeyu846-dot 的 GitHub 账号登录，只有网站所有者可以执行同步。</small></p>
+<section class="card"><h2>照着做，三步完成</h2><ol>
+<li><strong>打开同步入口。</strong>在 GitHub 页面点击右侧 <strong>Run workflow</strong>，分支保持 <strong>main</strong>。</li>
+<li><strong>粘贴文章链接。</strong>可以同时填写标题、发表日期和摘要。标题与日期都填好时，会直接采用你确认的信息；添加新文章时只填链接，会尝试读取文章；已收录文章的未填写字段保留原值。</li>
+<li><strong>点击绿色 Run workflow。</strong>等待最新一条运行记录出现绿色对勾，再返回网站刷新。文章会按发表日期排序，同一链接再次提交会更新原记录。</li>
+</ol></section>
+<section class="card"><h2>这些字段怎么填</h2><dl>
+<dt>文章链接 · 必填</dt><dd>粘贴微信文章的公开链接，例如 <code>https://mp.weixin.qq.com/s/…</code>。</dd>
+<dt>文章标题 · 选填</dt><dd>使用公众号里实际发表的标题。如果微信要求验证或无法读取，在这里补上标题。</dd>
+<dt>发表日期 · 选填</dt><dd>按 <code>2026-11-04</code> 的格式填写实际日期。系统不会把提交当天当作发表日期。</dd>
+<dt>文章摘要 · 选填</dt><dd>写一两句简短介绍即可。留空时，新文章可以只展示标题；更新旧文章时保留原摘要。</dd>
+</dl></section>
+<section class="card"><h2>如果没有出现绿色对勾</h2><p>点开最新运行记录，查看页面中的处理说明。微信有时会返回验证页面；遇到这种情况，回到入口补上标题和发表日期，再提交同一链接。</p><p class="muted">同步失败会保留原有文章。这里仅更新网站目录，读者仍点击文章进入公众号原文。</p></section>
+<p class="foot"><a href="./#writing">返回网站查看文章 →</a></p>
+</main></body></html>
